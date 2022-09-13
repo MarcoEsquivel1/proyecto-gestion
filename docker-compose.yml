@@ -1,6 +1,18 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
+    myadmin:
+        image: 'phpmyadmin:latest'
+        ports:
+          - 8080:80
+        environment:
+          MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+        links:
+          - "mysql:db"
+        depends_on:
+          - mysql
+        networks:
+          - sail
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.1

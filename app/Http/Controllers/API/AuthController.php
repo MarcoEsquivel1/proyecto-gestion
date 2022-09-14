@@ -23,8 +23,11 @@ class AuthController extends Controller
         $accessToken = $user->createToken('authToken')->accessToken;
 
         return response([
-            'user' => $user,
-            'access_token' => $accessToken
+            'message' => 'Usuario creado correctamente',
+            'data' => [
+                'user' => $user,
+                'access_token' => $accessToken
+            ]
         ]);
     }
 
@@ -41,6 +44,35 @@ class AuthController extends Controller
         $user = Auth::user();
         $accessToken = $user->createToken('Access Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'access_token'=> $accessToken]);
+        return response([
+            'message' => 'Login correcto',
+            'data'=> [
+                'user' => auth()->user(), 
+                'access_token'=> $accessToken
+                ]
+            ]);
+    }
+
+    public function logout(Request $request)
+    {        
+        if (Auth::check()) {
+            $token = Auth::user()->token();
+            $token->revoke();
+            return response(
+                [
+                    'message' => 'Sesion cerrada',
+                    'data' => [
+                        
+                    ]
+                ]
+            );
+        } 
+        else{ 
+            return response(
+                [
+                    'message' => 'Error'
+                ]
+            );
+        } 
     }
 }

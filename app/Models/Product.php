@@ -14,7 +14,7 @@ class Product extends Model
         'cantidad',
         'p/u',
         'description',
-        'tipo'
+        'marca',
         
     ];
 

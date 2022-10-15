@@ -12,7 +12,7 @@ class Move extends Model
     protected $fillable = [
        'date',
        'monto',
-       
+       'tipo'
     ];
 
     public function details()

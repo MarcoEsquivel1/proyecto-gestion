@@ -43,7 +43,8 @@ class MoveController extends Controller
 
         $validator = Validator::make($data, [
             'date'=>'required',
-        'monto'=>'required'
+        'monto'=>'required',
+        'tipo'  =>'required'
         ]);
 
         if($validator->fails()){

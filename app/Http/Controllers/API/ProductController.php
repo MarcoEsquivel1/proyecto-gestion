@@ -46,7 +46,7 @@ class AppointmentController extends Controller
         'cantidad'=>'required',
         'p/u'=>'required',
         'description'=>'required|max:100',
-        'tipo'=>'required|max:50'
+        'marca'=>'required|max:50'
         ]);
 
         if($validator->fails()){

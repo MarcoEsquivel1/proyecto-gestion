@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MoveResource;
 use App\Models\Move;
+use App\Models\Product;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,12 +21,7 @@ class MoveController extends Controller
     {
         $p = Move::all();
 
-        $formated = $p->map(
-            function($a){
-                $a->fecha = $this->FormatD($a->date);
-                return $a;
-            }, $p
-        );
+        $formated = $p;
 
         return response(['message' => 'OK',
         'data' => MoveResource::collection($formated)], 200);
@@ -43,8 +39,8 @@ class MoveController extends Controller
 
         $validator = Validator::make($data, [
             'date'=>'required',
-        'monto'=>'required',
-        'tipo'  =>'required'
+            'monto'=>'required',
+            'tipo'  =>'required'
         ]);
 
         if($validator->fails()){
@@ -59,17 +55,18 @@ class MoveController extends Controller
         return response([
             'message' => 'OK',
             'data' => [
-                'product' => new MoveResource($p)
+                'move' => new MoveResource($p)
             ]], 200);
     }
 
    
     public function show(Move $Move)
     {
+        $details = $Move->details;
         return response([
             'message' => 'Se recupero correctamente',
             'data' => [
-                'Move' => new ProductResource($Move)
+                'Move' => new MoveResource($Move)
             ]], 200);
     }
 
@@ -99,6 +96,18 @@ class MoveController extends Controller
      */
     public function destroy(Move $Move)
     {
+        //update cantidad in product for each detail
+        foreach($Move->details as $detail){
+            $product = Product::find($detail->product_id);
+            if($Move->tipo == 'compra'){
+                $product->cantidad = $product->cantidad - $detail->unidades;
+            }elseif($Move->tipo == 'venta'){
+                $product->cantidad = $product->cantidad + $detail->unidades;
+            }
+            $product->save();
+        }
+        //delete details
+        $Move->details()->delete();
         $Move->delete();
 
         return response([

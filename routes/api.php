@@ -28,5 +28,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::apiResource('/appointment', AppointmentController::class)->middleware('auth:api');
 Route::apiResource('/Product', ProductController::class)/* ->middleware('auth:api') */;
-Route::apiResource('/Move', MoveController::class)->middleware('auth:api');
-Route::apiResource('/detail', detailController::class)->middleware('auth:api');
+Route::apiResource('/Move', MoveController::class)/* ->middleware('auth:api') */;
+Route::apiResource('/detail', detailController::class)/* ->middleware('auth:api') */;

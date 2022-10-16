@@ -12,7 +12,7 @@ class Product extends Model
     protected $fillable = [
         'nombre',
         'cantidad',
-        'p/u',
+        'pu',
         'description',
         'marca',
         
@@ -27,4 +27,8 @@ class Product extends Model
     {
         return $this->hasMany(detail::class);
     }
+
+    
+
+    
 }

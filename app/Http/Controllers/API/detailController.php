@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\detailResource;
 use App\Models\detail;
+use App\Models\Product;
+use App\Models\Move;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,12 +22,7 @@ class detailController extends Controller
     {
         $p = detail::all();
 
-        $formated = $p->map(
-            function($a){
-                $a->fecha = $this->FormatD($a->date);
-                return $a;
-            }, $p
-        );
+        $formated = $p;
 
         return response(['message' => 'OK',
         'data' => detailResource::collection($formated)], 200);
@@ -43,9 +40,8 @@ class detailController extends Controller
 
         $validator = Validator::make($data, [
             'move_id'=>'required',
-       'unidades'=>'required',
-       'precio'=>'required',
-       'product_id'=>'required'
+            'unidades'=>'required',
+            'product_id'=>'required'
         ]);
 
         if($validator->fails()){
@@ -55,7 +51,25 @@ class detailController extends Controller
             ], 400);
         }
 
+        $precio = Product::find($data['product_id'])->pu;
+        $data['precio'] = $precio;
+
         $p = detail::create($data);
+
+        //update monto in move
+        $move = Move::find($data['move_id']);
+        $move->monto = $move->monto + ($precio * $data['unidades']);
+        $move->save();
+
+        //update stock in product
+        $product = Product::find($data['product_id']);
+        if($move->tipo == 'compra'){
+            $product->cantidad = $product->cantidad + $data['unidades'];
+            $product->save();
+        }elseif($move->tipo == 'venta'){
+            $product->cantidad = $product->cantidad - $data['unidades'];
+            $product->save();
+        }
 
         return response([
             'message' => 'OK',
@@ -100,6 +114,22 @@ class detailController extends Controller
      */
     public function destroy(detail $detail)
     {
+        //update monto in move
+        $move = Move::find($detail->move_id);
+        $move->monto = $move->monto - ($detail->precio * $detail->unidades);
+        $move->save();
+
+        //update stock in product
+        $product = Product::find($detail->product_id);
+        if($move->tipo == 'compra'){
+            $product->cantidad = $product->cantidad - $detail->unidades;
+            $product->save();
+        }elseif($move->tipo == 'venta'){
+            $product->cantidad = $product->cantidad + $detail->unidades;
+            $product->save();
+        }
+
+
         $detail->delete();
 
         return response([

@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\AppointmentController;
+use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\detailController;
+use App\Http\Controllers\API\MoveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

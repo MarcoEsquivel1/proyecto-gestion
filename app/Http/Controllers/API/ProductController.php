@@ -9,7 +9,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class AppointmentController extends Controller
+class ProductController extends Controller
 {
     public function FormatD($date){
         $nDate = DateTime::createFromFormat('Y-m-d', $date)->format('d-m-Y');

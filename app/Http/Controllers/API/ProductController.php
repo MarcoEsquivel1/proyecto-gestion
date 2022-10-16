@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use DateTime;
 use Illuminate\Http\Request;
@@ -20,12 +20,7 @@ class ProductController extends Controller
     {
         $p = Product::all();
 
-        $formated = $p->map(
-            function($a){
-                $a->fecha = $this->FormatD($a->date);
-                return $a;
-            }, $p
-        );
+        $formated = $p;
 
         return response(['message' => 'OK',
         'data' => ProductResource::collection($formated)], 200);
@@ -66,12 +61,12 @@ class ProductController extends Controller
     }
 
    
-    public function show(Product $product)
+    public function show(Product $Product)
     {
         return response([
             'message' => 'Se recupero correctamente',
             'data' => [
-                'product' => new ProductResource($product)
+                'product' => new ProductResource($Product)
             ]], 200);
     }
 

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->integer('cantidad');
-            $table->double('pu');
+            $table->double('pventa');
+            $table->double('pcompra');
             $table->string('description');
             $table->string('marca');
             $table->timestamps();

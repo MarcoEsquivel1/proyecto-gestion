@@ -51,22 +51,26 @@ class detailController extends Controller
             ], 400);
         }
 
-        $precio = Product::find($data['product_id'])->pu;
-        $data['precio'] = $precio;
-
-        $p = detail::create($data);
 
         //update monto in move
         $move = Move::find($data['move_id']);
-        $move->monto = $move->monto + ($precio * $data['unidades']);
-        $move->save();
 
         //update stock in product
         $product = Product::find($data['product_id']);
         if($move->tipo == 'compra'){
+            $precio = Product::find($data['product_id'])->pcompra;
+            $data['precio'] = $precio;
+            $p = detail::create($data);
+            $move->monto = $move->monto + ($precio * $data['unidades']);
+            $move->save();
             $product->cantidad = $product->cantidad + $data['unidades'];
             $product->save();
         }elseif($move->tipo == 'venta'){
+            $precio = Product::find($data['product_id'])->pventa;
+            $data['precio'] = $precio;
+            $p = detail::create($data);
+            $move->monto = $move->monto + ($precio * $data['unidades']);
+            $move->save();
             $product->cantidad = $product->cantidad - $data['unidades'];
             $product->save();
         }

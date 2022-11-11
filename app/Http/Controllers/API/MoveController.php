@@ -39,7 +39,6 @@ class MoveController extends Controller
 
         $validator = Validator::make($data, [
             'date'=>'required',
-            'monto'=>'required',
             'tipo'  =>'required'
         ]);
 
@@ -49,6 +48,9 @@ class MoveController extends Controller
                 'data' => $validator->errors()
             ], 400);
         }
+
+        //data add monto 0
+        $data['monto'] = 0;
 
         $p = Move::create($data);
 
